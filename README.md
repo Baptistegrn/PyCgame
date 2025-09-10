@@ -27,7 +27,7 @@ from PyCgame import PyCgame
 
 ---
 
-## 🚀 Initialisation d’un jeu
+## 🚀 Initialisation d’un jeu et stopper
 
 ```python
 
@@ -43,6 +43,9 @@ PyCgame.init(
     r=0, g=0, b=0,# couleur de lactualisation
     update_func=Update # nom de la fonction a actualiser
 )
+
+
+PyCgame.stopper_jeu()
 ```
 
 ---
