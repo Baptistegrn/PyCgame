@@ -15,6 +15,7 @@ Installez **PyCgame** directement depuis **PyPI** :
 
 ```bash
 pip install PyCgame
+```
 
 Assurez-vous que le module est accessible depuis votre projet :
 
