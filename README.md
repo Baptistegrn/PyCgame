@@ -85,8 +85,8 @@ def Update():
 - **Chiffres :** 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
 
 ```python
-jeu.touche_presser("Z")
-jeu.touche_enfoncee("Z")
+PyCgame.touche_presser("Z")
+PyCgame.touche_enfoncee("Z")
 ```
 
 ---
@@ -94,13 +94,13 @@ jeu.touche_enfoncee("Z")
 ## 🖼️ Gestion des images et du texte
 
 ```python
-jeu.ajouter_image(id_="./assets/perso.png", x=10, y=20, w=32, h=32, id_num=2)
-jeu.ajouter_mot(lien="./assets/police.png", mot="Hello", x=50, y=50, coeff=1, ecart=1, id_num=1)
-jeu.supprimer_image(1)
-jeu.modifier_image(x=20, y=30, w=32, h=32, id_num=1)
+PyCgame.ajouter_image(id_="./assets/perso.png", x=10, y=20, w=32, h=32, id_num=2)
+PyCgame.ajouter_mot(lien="./assets/police.png", mot="Hello", x=50, y=50, coeff=1, ecart=1, id_num=1)
+PyCgame.supprimer_image(1)
+PyCgame.modifier_image(x=20, y=30, w=32, h=32, id_num=1)
 # impossible de modifier la texture sur des caracteres (pour le moment)
-jeu.modifier_texture("./assets/nouvelle_image.png", id_num=2)
-jeu.ecrire_console("Bonjour le monde !")
+PyCgame.modifier_texture("./assets/nouvelle_image.png", id_num=2)
+PyCgame.ecrire_console("Bonjour le monde !")
 ```
 
 ---
