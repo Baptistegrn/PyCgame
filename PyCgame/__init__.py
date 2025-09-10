@@ -64,7 +64,7 @@ is_64bits = platform.architecture()[0] == "64bit"
 subfolder = "x64" if is_64bits else "x32"
 dll_path = os.path.join(_pkg_dir, "dll", subfolder, "jeu.dll")
 jeu = ctypes.CDLL(dll_path)
-print(f"Chargement de la DLL depuis : {dll_path}")
+
 
 
 """ ca cest pour ctypes je donne les types de mes fonctions c """
