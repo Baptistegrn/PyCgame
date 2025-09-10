@@ -66,14 +66,14 @@ def Update():
 
 | Propriété         | Description                          |
 | ------------------| -----------------------              |
-| `jeu.largeur`     | largeur virtuelle                    |
-| `jeu.hauteur`     | hauteur virtuelle                    |
-| `jeu.dt`          | delta time entre frames              |
-| `jeu.fps`         | FPS actuel                           |
-| `jeu.time`        | temps écoulé                         |
-| `jeu.run`         | bool : le jeu tourne ?               |
-| `jeu.decalage_x`  | decalage en x du jeu en plein ecran  | 
-| `jeu.decalage_y`  | decalage en y du jeu en plein ecran  | 
+| `PyCgame.largeur`     | largeur virtuelle                    |
+| `PyCgame.hauteur`     | hauteur virtuelle                    |
+| `PyCgame.dt`          | delta time entre frames              |
+| `PyCgame.fps`         | FPS actuel                           |
+| `PyCgame.time`        | temps écoulé                         |
+| `PyCgame.run`         | bool : le jeu tourne ?               |
+| `PyCgame.decalage_x`  | decalage en x du jeu en plein ecran  | 
+| `PyCgame.decalage_y`  | decalage en y du jeu en plein ecran  | 
 ---
 
 ## ⌨️ Gestion du clavier
