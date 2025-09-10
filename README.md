@@ -146,7 +146,7 @@ from PyCgame import PyCgame
 
 
 def update():
-    if PyCgame.key_just_pressed("Espace"):
+    if PyCgame.touche_presser("Espace"):
         print("Espace pressée !")
 
 PyCgame.init(largeur=160, hauteur=90, fps=60, update_func=update)
@@ -174,7 +174,8 @@ PyCgame.init(largeur=160, hauteur=90, fps=60, update_func=update)
 
    * Ajoutez de l’espace en haut ou en bas si nécessaire
    * Tout reste bien aligné à l’écran
-
+   * 
+4. exemple final : jeu.ajouter_image(id_="./mon_dossier", x=10, y=20, w=32, h=32, id_num=2)
 ---
 
 ## ✅ Notes importantes
