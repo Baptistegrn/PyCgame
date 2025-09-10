@@ -2,6 +2,9 @@
 
 **PyCgame** est un module Python pour créer facilement des jeux 2D avec images, sons, clavier/souris et fonctions mathématiques intégrées.
 
+👉 Actuellement disponible pour **Windows 64 bits** (et 32 bits).  
+👉 Une version **Linux** arrive bientôt.  
+
 ---
 
 ## ⚡ Installation
@@ -166,3 +169,8 @@ PyCgame.init(largeur=160, hauteur=90, fps=60, update_func=update)
 * Les images doivent avoir un **id unique** pour pouvoir les modifier ou supprimer.
 
 💡 Avec **PyCgame**, vous êtes prêt à créer votre jeu 2D en Python rapidement et proprement !
+
+##📬 Support & suggestions
+
+Pour tout bug ou toute suggestion, merci d’envoyer un mail à :
+📧 Baptiste.guerin34@gmail.com
