@@ -50,7 +50,7 @@ PyCgame.init(
 ## mise à jour
 
 ```python
-def ma_mise_a_jour():
+def Update():
     if jeu.key_just_pressed("Espace"):
         print("Espace pressée !")
 
