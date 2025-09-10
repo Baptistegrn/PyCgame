@@ -169,8 +169,12 @@ PyCgame.init(largeur=160, hauteur=90, fps=60, update_func=update)
 * Les images doivent avoir un **id unique** pour pouvoir les modifier ou supprimer.
 
 💡 Avec **PyCgame**, vous êtes prêt à créer votre jeu 2D en Python rapidement et proprement !
+
+
 ---
-##📬 Support & suggestions
+
+
+## 📬 Support & suggestions
 
 Pour tout bug ou toute suggestion, merci d’envoyer un mail à :
 📧 Baptiste.guerin34@gmail.com
