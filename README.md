@@ -119,12 +119,12 @@ PyCgame.arreter_canal(3)
 ## 🧮 Fonctions mathématiques intégrées
 
 ```python
-jeu.abs_val(-5)
-jeu.clamp(10, 0, 5)
-jeu.pow(2, 3)
-jeu.sqrt(16)
-jeu.sin(3.14)
-jeu.atan2(1, 1)
+PyCgame.abs_val(-5)
+PyCgame.clamp(10, 0, 5)
+PyCgame.pow(2, 3)
+PyCgame.sqrt(16)
+PyCgame.sin(3.14)
+PyCgame.atan2(1, 1)
 ```
 
 > Et beaucoup d’autres : `cos`, `tan`, `log`, `exp`, `floor`, `ceil`, `round`, `trunc`, `fmod`, `hypot`, etc.
@@ -134,7 +134,7 @@ jeu.atan2(1, 1)
 ## 🖥️ Redimensionnement
 
 ```python
-jeu.redimensionner_fenetre()
+PyCgame.redimensionner_fenetre()
 ```
 
 ---
