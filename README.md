@@ -36,7 +36,7 @@ PyCgame.init(
     hauteur=90,#hauteur
     fps=60,#actualisation
     coeff=3,#coeff de lecran sans redimensionner ici 3x160,3x90
-    chemin_image="./assets",#ici dossier courant puis dossier assets -> si rien mis, les images doivent etre dans le meme dossier dexecution  ../assets etc....
+    chemin_image="./assets",#ici dossier courant puis dossier assets -> si rien mis, les images doivent etre dans le meme dossier dexecution  on peut aussi mettre : ../assets etc....
     chemin_son="./assets",
     dessiner=True,#estce que je dessine un fond quand jactualise ?
     bande_noir=True,#estce que je dessine des bandes noirs si ma fenetre en plein ecran nest pas proportionnel a lecran ?
@@ -109,9 +109,9 @@ jeu.ecrire_console("Bonjour le monde !")
 
 ```python
 #wav obligatoire (pour le moment)
-jeu.jouer_son("son.wav", boucle=0, canal=3)
-jeu.arreter_son("son.wav")
-jeu.arreter_canal(3)
+PyCgame.jouer_son("./assets/son.wav", boucle=1, canal=3) # boucle =  0 sera infini 1 = 1 tour etc...
+PyCgame.arreter_son("./assets/son.wav")
+PyCgame.arreter_canal(3)
 ```
 
 ---
