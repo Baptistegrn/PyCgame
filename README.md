@@ -51,8 +51,9 @@ PyCgame.init(
 
 ```python
 def Update():
-    if jeu.key_just_pressed("Espace"):
+    if PyCgame.touche_presser("Espace"):
         print("Espace pressée !")
+
 
 ```
 
@@ -73,6 +74,12 @@ def Update():
 ---
 
 ## ⌨️ Gestion du clavier
+### Touches supportées
+(temporaire)
+- **Touches spéciales :** Espace, Entrée, Échap, Escape, Tab, Maj, Shift
+- **Touches fonction :** F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12
+- **Lettres :** A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+- **Chiffres :** 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
 
 ```python
 jeu.touche_presser("Z")
