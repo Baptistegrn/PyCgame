@@ -1,0 +1,6 @@
+README.md
+setup.py
+PyCgame.egg-info/PKG-INFO
+PyCgame.egg-info/SOURCES.txt
+PyCgame.egg-info/dependency_links.txt
+PyCgame.egg-info/top_level.txt

@@ -1,0 +1,18 @@
+Metadata-Version: 2.4
+Name: PyCgame
+Version: 0.1.1
+Summary: Moteur Python pour jeux 2D avec gestion des images, sons et entrées
+Author: Baptiste GUERIN
+Author-email: baptiste.guerin34@gmail.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Games/Entertainment
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description-content-type
+Dynamic: requires-python
+Dynamic: summary

@@ -1,0 +1,5 @@
+# Inclure toutes les DLL dans le package
+recursive-include PyCgame/dll *
+
+# Inclure les exemples
+recursive-include examples *

@@ -1,0 +1,16 @@
+MANIFEST.in
+README.md
+setup.py
+PyCgame/__init__.py
+PyCgame.egg-info/PKG-INFO
+PyCgame.egg-info/SOURCES.txt
+PyCgame.egg-info/dependency_links.txt
+PyCgame.egg-info/top_level.txt
+PyCgame/dll/x32/SDL2.dll
+PyCgame/dll/x32/SDL2_image.dll
+PyCgame/dll/x32/SDL2_mixer.dll
+PyCgame/dll/x32/jeu.dll
+PyCgame/dll/x64/SDL2.dll
+PyCgame/dll/x64/SDL2_image.dll
+PyCgame/dll/x64/SDL2_mixer.dll
+PyCgame/dll/x64/jeu.dll
