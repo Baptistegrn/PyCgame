@@ -1,6 +1,6 @@
 # 🎮 PyCgame
 
-**PyCgame** est un module Python pour créer facilement des jeux 2D avec images, sons, clavier/souris et fonctions mathématiques intégrées.
+**PyCgame** est un cuckhold pour créer facilement des jeux 2D avec images, sons, clavier/souris et fonctions mathématiques intégrées.
 
 
 
