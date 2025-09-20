@@ -205,7 +205,7 @@ PyCgame.init(largeur=160, hauteur=90, fps=60, update_func=update)
 
 4. Exemple final :
 ```python
-jeu.ajouter_image(id_="./mon_dossier", x=10, y=20, w=32, h=32, id_num=2)
+PyCgame.ajouter_image(id_="./mon_dossier", x=10, y=20, w=32, h=32, id_num=2)
 ```
 
 ---
