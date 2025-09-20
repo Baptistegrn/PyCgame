@@ -64,7 +64,7 @@ is_64bits = platform.architecture()[0] == "64bit"
 subfolder = "x64" if is_64bits else "x32"
 dll_path = os.path.join(_pkg_dir, "dll", subfolder, "jeu.dll")
 jeu = ctypes.CDLL(dll_path)
-print(f"Chargement de la DLL depuis : {dll_path}")
+
 
 
 """ ca cest pour ctypes je donne les types de mes fonctions c """
@@ -236,7 +236,7 @@ class _PyCgame:
         self._user_update = None
 
     def init(self, largeur=160, hauteur=90, fps=60, coeff=3,
-             chemin_image="", chemin_son="",
+             chemin_image=".", chemin_son=".",
              dessiner=True, bande_noir=True, r=0, g=0, b=0,
              update_func=None):
         #init
@@ -276,6 +276,14 @@ class _PyCgame:
     def fps(self): return self._g.contents.fps if self._g else 0.0
     @property
     def time(self): return self._g.contents.temps_frame if self._g else 0
+    @property
+    def mouse_x(self): return self._g.contents.entrees.contents.mouse_x if self._g else 0
+    @property
+    def mouse_y(self): return self._g.contents.entrees.contents.mouse_y if self._g else 0
+    @property
+    def mouse_presse(self): return self._g.contents.entrees.contents.mouse_pressed if self._g else False
+    @property
+    def mouse_juste_presse(self): return self._g.contents.entrees.contents.mouse_just_pressed if self._g else False
     @property
     def decalage_x(self): return self._g.contents.decalage_x/(self._g.contents.largeur_actuel/self._g.contents.largeur) if self._g else 0
     @property

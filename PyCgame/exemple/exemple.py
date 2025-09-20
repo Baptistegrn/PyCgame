@@ -13,8 +13,8 @@ def update_jeu():
     global math_demo_done
 
     # Affichage d'infos de debug sur le jeu en cours
-    print(f"[INFO] dt={PyCgame.dt:.4f}, time={PyCgame.time},decalage x,y:{PyCgame.decalage_x},{PyCgame.decalage_y} fps={PyCgame.fps}")
-
+    print(f"[INFO] dt={PyCgame.dt}, time={PyCgame.time},decalage x,y:{PyCgame.decalage_x},{PyCgame.decalage_y} fps={PyCgame.fps}")
+    print(f"mouse : {PyCgame.mouse_x} {PyCgame.mouse_y} {PyCgame.mouse_presse} {PyCgame.mouse_juste_presse}")
     # 🎵 Contrôle du son
     if PyCgame.touche_presser("X"):  # Jouer un son
         PyCgame.jouer_son("./assets/test.wav", boucle=2, canal=3)
