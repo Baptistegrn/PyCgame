@@ -201,7 +201,7 @@ jeu.hypot_custom.argtypes = [c_double, c_double]
 jeu.hypot_custom.restype = c_double
 
 
-jeu.redimensionner_fenetre.argtypes = [POINTER(Gestionnaire)]  # prend le gestionnaire
+jeu.redimensionner_fenetre.argtypes = [POINTER(Gestionnaire)] 
 jeu.redimensionner_fenetre.restype = None     
 
 
@@ -210,16 +210,16 @@ jeu.ecrire_dans_console.restype = None
 
 
 jeu.ajouter_mot_dans_tableau.argtypes = [
-    POINTER(Gestionnaire),  # Gestionnaire *
-    c_int,                  # id
-    c_char_p,               # chemin
-    c_char_p,               # mot
-    c_float,                # posx
-    c_float,                # posy
-    c_float,                # coeff
-    c_int,                  # sens
-    c_float,                # ecart
-    c_int                   # decalage
+    POINTER(Gestionnaire),  
+    c_int,                  
+    c_char_p,              
+    c_char_p,              
+    c_float,                
+    c_float,                
+    c_float,                
+    c_int,                  
+    c_float,                
+    c_int                   
 ]
 jeu.ajouter_mot_dans_tableau.restype = None
 
@@ -316,7 +316,7 @@ class _PyCgame:
             x, y, coeff,
             sens,
             ecart,
-            rotation  # ici rotation correspond au decalage en C
+            rotation   
         )
 
     def ecrire_console(self,mot):
@@ -341,7 +341,7 @@ class _PyCgame:
         jeu.arreter_canal(canal)
     def stopper_jeu(self):
         self._g.contents.run=False
-    # maths jen ai mis un packet
+    # maths yen a bcp
     def abs_val(self, x): return jeu.abs_val(c_double(x))
     def clamp(self, x, min_, max_): return jeu.clamp(c_double(x), c_double(min_), c_double(max_))
     def pow(self, base, exp): return jeu.pow_custom(c_double(base), c_double(exp))
