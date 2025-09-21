@@ -1,6 +1,5 @@
 import ctypes
 from ctypes import c_int, c_float, c_bool, c_void_p, POINTER, c_double, c_char_p # bibli entre python et c
-from os import path #os
 import os
 import platform
 TAILLE_LIEN_GT = 256 # taille des liens maximum des dossiers vers les images et son
@@ -58,30 +57,25 @@ class Gestionnaire(ctypes.Structure):
         ("textures", c_void_p),
         ("sons", c_void_p)
     ]
-import os
-import platform
-import ctypes
 
-# Dossier du package
+
+# dll 64 ou 32 ou .so ???
 _pkg_dir = os.path.dirname(__file__)
-
-# Détection 32/64 bits
 is_64bits = platform.architecture()[0] == "64bit"
 subfolder = "x64" if is_64bits else "x32"
-# systeme
-system = platform.system()
-if system == "Windows":
-    lib_name = "jeu.dll"
-elif system == "Linux":
-    lib_name = "jeu.so"
+
+system = platform.system().lower()
+
+if system == "windows":
+    dll_path = os.path.join(_pkg_dir, "dll", subfolder, "jeu.dll")
+    jeu = ctypes.CDLL(dll_path)
+
+elif system == "linux":
+    so_path = os.path.join(_pkg_dir, "so", subfolder, "libjeu.so")
+    jeu = ctypes.CDLL(so_path)
+
 else:
-    raise OSError(f"Système non supporté : {system}")
-
-# Construction du chemin complet
-lib_path = os.path.join(_pkg_dir, "dll", subfolder, lib_name)
-
-# Chargement de la bibliothèque
-jeu = ctypes.CDLL(lib_path)
+    raise RuntimeError(f"Système non supporté : {system}")
 
 
 
