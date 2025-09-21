@@ -58,12 +58,30 @@ class Gestionnaire(ctypes.Structure):
         ("textures", c_void_p),
         ("sons", c_void_p)
     ]
-#32 ou 64 bits
+import os
+import platform
+import ctypes
+
+# Dossier du package
 _pkg_dir = os.path.dirname(__file__)
+
+# Détection 32/64 bits
 is_64bits = platform.architecture()[0] == "64bit"
 subfolder = "x64" if is_64bits else "x32"
-dll_path = os.path.join(_pkg_dir, "dll", subfolder, "jeu.dll")
-jeu = ctypes.CDLL(dll_path)
+# systeme
+system = platform.system()
+if system == "Windows":
+    lib_name = "jeu.dll"
+elif system == "Linux":
+    lib_name = "jeu.so"
+else:
+    raise OSError(f"Système non supporté : {system}")
+
+# Construction du chemin complet
+lib_path = os.path.join(_pkg_dir, "dll", subfolder, lib_name)
+
+# Chargement de la bibliothèque
+jeu = ctypes.CDLL(lib_path)
 
 
 
