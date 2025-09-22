@@ -4,7 +4,7 @@
 
 👉 Actuellement disponible pour **Windows 64 bits** (et 32 bits).  
 👉 Une version **Linux** vient d'arriver.  
-👉 Prochainement titre fenetre + linux 32 bits + click droit.  
+👉 Prochainement titre fenetre + linux 32 bits + click droit + mannette + pause / reprendre son .  
 ---
 
 ## ⚡ Installation
