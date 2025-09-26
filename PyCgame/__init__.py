@@ -1,6 +1,5 @@
 import ctypes
 from ctypes import c_int, c_float, c_bool, c_void_p, POINTER, c_double, c_char_p # bibli entre python et c
-from os import path #os
 import os
 import platform
 TAILLE_LIEN_GT = 256 # taille des liens maximum des dossiers vers les images et son
@@ -34,6 +33,8 @@ class FondActualiser(ctypes.Structure):
 class GestionnaireEntrees(ctypes.Structure):
     _fields_ = [
         ("mouse_x", c_int), ("mouse_y", c_int),
+        ("mouse_right_pressed", c_bool),
+        ("mouse_right_just_pressed", c_bool),      
         ("mouse_pressed", c_bool),
         ("mouse_just_pressed", c_bool),
         ("keys", c_bool * 512),
@@ -58,19 +59,31 @@ class Gestionnaire(ctypes.Structure):
         ("textures", c_void_p),
         ("sons", c_void_p)
     ]
-#32 ou 64 bits
+
+
+# dll 64 ou 32 ou .so ???
 _pkg_dir = os.path.dirname(__file__)
 is_64bits = platform.architecture()[0] == "64bit"
 subfolder = "x64" if is_64bits else "x32"
-dll_path = os.path.join(_pkg_dir, "dll", subfolder, "jeu.dll")
-jeu = ctypes.CDLL(dll_path)
+
+system = platform.system().lower()
+
+if system == "windows":
+    dll_path = os.path.join(_pkg_dir, "dll", subfolder, "jeu.dll")
+    jeu = ctypes.CDLL(dll_path)
+
+elif system == "linux":
+    so_path = os.path.join(_pkg_dir, "so", subfolder, "libjeu.so")
+    jeu = ctypes.CDLL(so_path)
+
+else:
+    raise RuntimeError(f"Système non supporté : {system}")
 
 
 
 """ ca cest pour ctypes je donne les types de mes fonctions c """
 # Initialisation
-jeu.initialisation.argtypes = [c_int, c_int, c_float, c_int,
-                               c_char_p, c_char_p, c_bool, c_bool, c_int, c_int, c_int]
+jeu.initialisation.argtypes = [c_int, c_int, c_float, c_int, c_char_p, c_char_p, c_bool, c_bool, c_int, c_int, c_int,c_char_p]
 jeu.initialisation.restype = POINTER(Gestionnaire)
 
 # Boucle et update
@@ -84,17 +97,13 @@ jeu.liberer_jeu.argtypes = [POINTER(Gestionnaire)]
 jeu.liberer_jeu.restype = None
 
 # Images
-jeu.ajouter_image_au_tableau.argtypes = [POINTER(Gestionnaire), c_char_p,
-                                         c_float, c_float, c_float, c_float,
-                                         c_int, c_int, c_int]
+jeu.ajouter_image_au_tableau.argtypes = [POINTER(Gestionnaire), c_char_p,c_float, c_float, c_float, c_float,c_int, c_int, c_int]
 jeu.ajouter_image_au_tableau.restype = c_int
 
 jeu.supprimer_images_par_id.argtypes = [POINTER(Gestionnaire), c_int]
 jeu.supprimer_images_par_id.restype = None
 
-jeu.modifier_images.argtypes = [POINTER(Gestionnaire),
-                                c_float, c_float, c_float, c_float,
-                                c_int, c_int, c_int]
+jeu.modifier_images.argtypes = [POINTER(Gestionnaire),c_float, c_float, c_float, c_float,c_int, c_int, c_int]
 jeu.modifier_images.restype = None
 
 jeu.modifier_texture_image.argtypes = [POINTER(Gestionnaire), c_char_p, c_int]
@@ -201,7 +210,7 @@ jeu.hypot_custom.argtypes = [c_double, c_double]
 jeu.hypot_custom.restype = c_double
 
 
-jeu.redimensionner_fenetre.argtypes = [POINTER(Gestionnaire)]  # prend le gestionnaire
+jeu.redimensionner_fenetre.argtypes = [POINTER(Gestionnaire)] 
 jeu.redimensionner_fenetre.restype = None     
 
 
@@ -210,20 +219,38 @@ jeu.ecrire_dans_console.restype = None
 
 
 jeu.ajouter_mot_dans_tableau.argtypes = [
-    POINTER(Gestionnaire),  # Gestionnaire *
-    c_int,                  # id
-    c_char_p,               # chemin
-    c_char_p,               # mot
-    c_float,                # posx
-    c_float,                # posy
-    c_float,                # coeff
-    c_int,                  # sens
-    c_float,                # ecart
-    c_int                   # decalage
+    POINTER(Gestionnaire),  c_int, c_char_p, c_char_p, c_float,c_float, c_float,c_int,  c_float,c_int                   
 ]
 jeu.ajouter_mot_dans_tableau.restype = None
 
-# Callback
+
+jeu.pause_canal.argtypes = [c_int]
+jeu.pause_canal.restype = None
+
+jeu.pause_son.argtypes = [POINTER(Gestionnaire), c_char_p]
+jeu.pause_son.restype = None
+
+jeu.reprendre_canal.argtypes = [c_int]
+jeu.reprendre_canal.restype = None
+
+jeu.reprendre_son.argtypes = [POINTER(Gestionnaire), c_char_p]
+jeu.reprendre_son.restype = None
+
+jeu.touche_enfoncee.argtypes = [POINTER(Gestionnaire), c_char_p]
+jeu.touche_enfoncee.restype = c_bool
+
+jeu.touche_mannette_enfoncee.argtypes = [POINTER(Gestionnaire), c_char_p]
+jeu.touche_mannette_enfoncee.restype = c_bool
+
+jeu.touche_mannette_juste_presse.argtypes = [POINTER(Gestionnaire), c_char_p]
+jeu.touche_mannette_juste_presse.restype = c_bool
+
+jeu.init_controller.argtypes = [POINTER(Gestionnaire), c_int]
+jeu.init_controller.restype = None
+
+jeu.fermer_controller.argtypes = [POINTER(Gestionnaire)]
+jeu.fermer_controller.restype = None
+
 UpdateCallbackType = ctypes.CFUNCTYPE(None, POINTER(Gestionnaire))
 jeu.set_update_callback.argtypes = [UpdateCallbackType]
 jeu.set_update_callback.restype = None
@@ -238,12 +265,12 @@ class _PyCgame:
     def init(self, largeur=160, hauteur=90, fps=60, coeff=3,
              chemin_image=".", chemin_son=".",
              dessiner=True, bande_noir=True, r=0, g=0, b=0,
-             update_func=None):
+             update_func=None,nom_fenetre="fenetre"):
         #init
         self._g = jeu.initialisation(
             hauteur, largeur, fps, coeff,
             chemin_image.encode("utf-8"), chemin_son.encode("utf-8"),
-            dessiner, bande_noir, r, g, b
+            dessiner, bande_noir, r, g, b,nom_fenetre.encode("utf-8")
         )
         if not self._g:
             raise RuntimeError("Initialisation échouée")
@@ -285,6 +312,10 @@ class _PyCgame:
     @property
     def mouse_juste_presse(self): return self._g.contents.entrees.contents.mouse_just_pressed if self._g else False
     @property
+    def mouse_droit_presse(self): return self._g.contents.entrees.contents.mouse_right_pressed if self._g else False
+    @property
+    def mouse_droit_juste_presse(self): return self._g.contents.entrees.contents.mouse_right_just_pressed if self._g else False
+    @property
     def decalage_x(self): return self._g.contents.decalage_x/(self._g.contents.largeur_actuel/self._g.contents.largeur) if self._g else 0
     @property
     def decalage_y(self): return self._g.contents.decalage_y/(self._g.contents.hauteur_actuel/self._g.contents.hauteur) if self._g else 0
@@ -316,7 +347,7 @@ class _PyCgame:
             x, y, coeff,
             sens,
             ecart,
-            rotation  # ici rotation correspond au decalage en C
+            rotation  
         )
 
     def ecrire_console(self,mot):
@@ -374,7 +405,39 @@ class _PyCgame:
         if not self._g:
             raise RuntimeError("Jeu non initialisé")
         jeu.redimensionner_fenetre(self._g)
+    def pause_canal(self, canal):
+        jeu.pause_canal(canal)
 
+    def pause_son(self, lien):
+        if not self._g: return
+        jeu.pause_son(self._g, lien.encode("utf-8"))
+
+    def reprendre_canal(self, canal):
+        jeu.reprendre_canal(canal)
+
+    def reprendre_son(self, lien):
+        if not self._g: return
+        jeu.reprendre_son(self._g, lien.encode("utf-8"))
+
+    def touche_mannette_enfoncee(self, key_name):
+        if not self._g:
+            return False
+        return jeu.touche_mannette_enfoncee(self._g, key_name.encode("utf-8"))
+
+    def touche_mannette_juste_presse(self, key_name):
+        if not self._g:
+            return False
+        return jeu.touche_mannette_juste_presse(self._g, key_name.encode("utf-8"))
+
+    def init_controller(self, index=0):
+        if not self._g:
+            raise RuntimeError("Jeu non initialisé")
+        jeu.init_controller(self._g, index)
+
+    def fermer_controller(self):
+        if not self._g:
+            return
+        jeu.fermer_controller(self._g)
     #update
     def set_update_callback(self, py_func):
         if not callable(py_func):

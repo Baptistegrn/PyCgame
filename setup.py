@@ -6,7 +6,7 @@ long_description = (this_directory / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="PyCgame",
-    version="1.5.0",
+    version="1.6.0",
     author="Baptiste GUERIN",
     author_email="baptiste.guerin34@gmail.com",
     description="Moteur Python pour jeux 2D avec gestion des images, sons et entrées",
@@ -14,7 +14,12 @@ setup(
     long_description_content_type="text/markdown",
     packages=find_packages(),  
     include_package_data=True,
-    package_data={"PyCgame": ["dll/*/*.dll"]},
+    package_data={
+        "PyCgame": [
+            "dll/*/*.dll",
+            "so/*/*.so"
+        ]
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
@@ -24,3 +29,4 @@ setup(
     python_requires=">=3.8",
     install_requires=[],
 )
+

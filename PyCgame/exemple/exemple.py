@@ -1,21 +1,31 @@
+
 from PyCgame import PyCgame
 import random
 
 # Flag pour afficher les fonctions mathématiques une seule fois
 math_demo_done = False
-
+init_mannette = False
 def update_jeu():
     """
     Cette fonction est appelée à chaque frame par le moteur.
     C'est ici quon gères les entrées clavier, les images,
     le son et les calculs.
     """
-    global math_demo_done
-
+    global math_demo_done,init_mannette
+    if not(init_mannette):
+        PyCgame.init_controller()
+        init_mannette=True
     # Affichage d'infos de debug sur le jeu en cours
-    print(f"[INFO] dt={PyCgame.dt}, time={PyCgame.time},decalage x,y:{PyCgame.decalage_x},{PyCgame.decalage_y} fps={PyCgame.fps}")
-    print(f"mouse : {PyCgame.mouse_x} {PyCgame.mouse_y} {PyCgame.mouse_presse} {PyCgame.mouse_juste_presse}")
+    #print(f"[INFO] dt={PyCgame.dt}, time={PyCgame.time},decalage x,y:{PyCgame.decalage_x},{PyCgame.decalage_y} fps={PyCgame.fps}")
+    #print(f"mouse : {PyCgame.mouse_x} {PyCgame.mouse_y} {PyCgame.mouse_presse} {PyCgame.mouse_juste_presse}")
     # 🎵 Contrôle du son
+    if PyCgame.touche_mannette_juste_presse("X"):
+        PyCgame.pause_son("./assets/test.wav")
+    if PyCgame.touche_mannette_juste_presse("Y"):
+        PyCgame.reprendre_son("./assets/test.wav")
+    if PyCgame.touche_mannette_enfoncee("A"):
+        print("touche mannette enfoncee")
+        
     if PyCgame.touche_presser("X"):  # Jouer un son
         PyCgame.jouer_son("./assets/test.wav", boucle=2, canal=3)
     if PyCgame.touche_presser("Z"):  # Stopper un canal
@@ -30,7 +40,7 @@ def update_jeu():
             100, 100,
             id_num=30
         )
-    if PyCgame.touche_presser("D"):  # Supprimer l’image avec id=30
+    if PyCgame.touche_presser("gauche"):  # Supprimer l’image avec id=30
         PyCgame.supprimer_image(30)
     if PyCgame.touche_presser("I"):  # Modifier l’image (déplacer/redimensionner)
         PyCgame.modifier_image(0, 0, 120, 120, id_num=30)
@@ -46,9 +56,9 @@ def update_jeu():
         PyCgame.ajouter_mot(
             "./assets/police",
             "Hello PyCgame ! 123 ;:[]$",
-            x=20,
-            y=40,
-            coeff=0.5,
+            x=0,
+            y=164,
+            coeff=2,
             ecart=2,
             id_num=1,
             sens=0,
@@ -105,5 +115,5 @@ PyCgame.init(
     dessiner=True,
     bande_noir=True,
     r=50, g=3, b=70,
-    update_func=update_jeu
+    update_func=update_jeu,nom_fenetre="coucou PyCgame"
 )
