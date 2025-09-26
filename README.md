@@ -7,7 +7,7 @@
 
 ------------------------------------------------------
 
-> **Nouveautés récentes :** prise en charge des manettes (controller) + fonctions pause/reprendre pour les sons (par canal ou par fichier).
+> **Nouveautés :** prise en charge des manettes (controller) + fonctions pause/reprendre pour les sons (par canal ou par fichier).
 
 ## ⚡ Installation
 
