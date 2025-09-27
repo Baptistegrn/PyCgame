@@ -2,8 +2,8 @@
 
 **PyCgame** est un module Python pour créer facilement des jeux 2D avec images, sons, clavier/souris et fonctions mathématiques intégrées.
 
-👉 Actuellement disponible pour **Windows 64 bits** (et 32 bits).
-👉 Une version **Linux** vient d'arriver.
+👉 Actuellement disponible pour **Windows 64 bits** et **linux**.
+👉 bientot prise en charge des joysticks des mannettes et compilation automatique pour linux avec make.
 
 ------------------------------------------------------
 
@@ -190,7 +190,6 @@ PyCgame.fermer_controller()
 * **Croix directionnelle (D-Pad) :** `haut`, `up`, `bas`, `down`, `gauche`, `left`, `droite`, `right`
 * **Modernes / additionnels :** `share`, `capture`, `paddle1`, `paddle2`, `paddle3`, `paddle4`, `touchpad`
 
-> (Ces noms correspondent à l'implémentation interne évènementielle — si un nom inconnu est donné, la fonction renverra `SDL_CONTROLLER_BUTTON_INVALID` côté C et la vérification renverra `False` côté Python.)
 
 ---
 
