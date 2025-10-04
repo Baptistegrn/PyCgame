@@ -5,6 +5,8 @@ import platform
 TAILLE_LIEN_GT = 256 # taille des liens maximum des dossiers vers les images et son
 TAILLE_CANAL =32 # nb canaux de sons
 
+import subprocess
+
 
 # structure c : il yen a bcp plus que utlise au cas ou il faudrait les utiliser plus tard 
 class Image(ctypes.Structure):
@@ -61,7 +63,6 @@ class Gestionnaire(ctypes.Structure):
     ]
 
 
-# dll 64 ou 32 ou .so ???
 _pkg_dir = os.path.dirname(__file__)
 is_64bits = platform.architecture()[0] == "64bit"
 subfolder = "x64" if is_64bits else "x32"
@@ -69,11 +70,16 @@ subfolder = "x64" if is_64bits else "x32"
 system = platform.system().lower()
 
 if system == "windows":
-    dll_path = os.path.join(_pkg_dir, "dll", subfolder, "jeu.dll")
+    dll_path = os.path.join(_pkg_dir, "dll", subfolder, "libjeu.dll")
     jeu = ctypes.CDLL(dll_path)
 
 elif system == "linux":
-    so_path = os.path.join(_pkg_dir, "so", subfolder, "libjeu.so")
+    so_path = os.path.join(_pkg_dir, "so", "libjeu.so")
+
+    if not os.path.exists(so_path):
+        compilation_path = os.path.join(_pkg_dir, "so", "compilation")
+        subprocess.run(["make"], cwd=compilation_path, check=True)
+
     jeu = ctypes.CDLL(so_path)
 
 else:
@@ -83,8 +89,11 @@ else:
 
 """ ca cest pour ctypes je donne les types de mes fonctions c """
 # Initialisation
-jeu.initialisation.argtypes = [c_int, c_int, c_float, c_int, c_char_p, c_char_p, c_bool, c_bool, c_int, c_int, c_int,c_char_p]
+jeu.initialisation.argtypes = [c_int, c_int, c_float, c_int, c_char_p, c_char_p, c_bool, c_bool, c_int, c_int, c_int,c_char_p,c_bool]
 jeu.initialisation.restype = POINTER(Gestionnaire)
+#colorier
+jeu.colorier.argtypes = [POINTER(Gestionnaire),c_int,c_int,c_int]
+jeu.colorier.restype = None
 
 # Boucle et update
 jeu.update.argtypes = [POINTER(Gestionnaire)]
@@ -102,13 +111,20 @@ jeu.ajouter_image_au_tableau.restype = c_int
 
 jeu.supprimer_images_par_id.argtypes = [POINTER(Gestionnaire), c_int]
 jeu.supprimer_images_par_id.restype = None
+jeu.supprimer_images_par_id_batch.argtypes = [POINTER(Gestionnaire),POINTER(c_int), c_int]
+jeu.supprimer_images_par_id_batch.restype = None
+
 
 jeu.modifier_images.argtypes = [POINTER(Gestionnaire),c_float, c_float, c_float, c_float,c_int, c_int, c_int]
 jeu.modifier_images.restype = None
+jeu.modifier_images_batch.argtypes = [POINTER(Gestionnaire),POINTER(c_float),  POINTER(c_float),  POINTER(c_float),POINTER(c_float),POINTER(c_int),POINTER(c_int),POINTER(c_int),c_int]
+jeu.modifier_images_batch.restype = None
+
 
 jeu.modifier_texture_image.argtypes = [POINTER(Gestionnaire), c_char_p, c_int]
 jeu.modifier_texture_image.restype = None
-
+jeu.modifier_texture_image_batch.argtypes = [POINTER(Gestionnaire),POINTER(c_char_p), POINTER(c_int),c_int]
+jeu.modifier_texture_image_batch.restype = None
 # Sons
 jeu.jouer_son.argtypes = [POINTER(Gestionnaire), c_char_p, c_int, c_int]
 jeu.jouer_son.restype = None
@@ -125,6 +141,9 @@ jeu.touche_juste_presse.argtypes = [POINTER(Gestionnaire), c_char_p]
 jeu.touche_juste_presse.restype = c_bool
 
 # maths
+jeu.random_jeu.argtypes = [c_int, c_int]
+jeu.random_jeu.restype = c_int
+
 jeu.abs_val.argtypes = [c_double]
 jeu.abs_val.restype = c_double
 
@@ -251,6 +270,13 @@ jeu.init_controller.restype = None
 jeu.fermer_controller.argtypes = [POINTER(Gestionnaire)]
 jeu.fermer_controller.restype = None
 
+
+jeu.renvoie_joysticks.argtypes = [POINTER(GestionnaireEntrees), c_float]
+jeu.renvoie_joysticks.restype = POINTER(c_float)
+
+jeu.fermer_joystick.argtypes = [POINTER(Gestionnaire)]
+jeu.fermer_joystick.restype = None
+
 UpdateCallbackType = ctypes.CFUNCTYPE(None, POINTER(Gestionnaire))
 jeu.set_update_callback.argtypes = [UpdateCallbackType]
 jeu.set_update_callback.restype = None
@@ -265,12 +291,12 @@ class _PyCgame:
     def init(self, largeur=160, hauteur=90, fps=60, coeff=3,
              chemin_image=".", chemin_son=".",
              dessiner=True, bande_noir=True, r=0, g=0, b=0,
-             update_func=None,nom_fenetre="fenetre"):
+             update_func=None,nom_fenetre="fenetre",debug=False):
         #init
         self._g = jeu.initialisation(
             hauteur, largeur, fps, coeff,
             chemin_image.encode("utf-8"), chemin_son.encode("utf-8"),
-            dessiner, bande_noir, r, g, b,nom_fenetre.encode("utf-8")
+            dessiner, bande_noir, r, g, b,nom_fenetre.encode("utf-8"),debug
         )
         if not self._g:
             raise RuntimeError("Initialisation échouée")
@@ -355,11 +381,47 @@ class _PyCgame:
     def supprimer_image(self, id_num):
         jeu.supprimer_images_par_id(self._g, id_num)
 
+    def supprimer_images_par_id_batch(self, id_supprimer_list):
+        if not self._g:
+            raise RuntimeError("Jeu non initialisé")
+        # conversion
+        taille = len(id_supprimer_list)
+        Ids = (c_int * taille)(*id_supprimer_list)
+        jeu.supprimer_images_par_id_batch(self._g, Ids,taille)
+
+
     def modifier_image(self, x, y, w, h, id_num,sens=0, rotation=0):
         jeu.modifier_images(self._g, x, y, w, h, sens, id_num, rotation)
 
+    def modifier_images_batch(self, x_list, y_list, w_list, h_list, sens_list, id_list, rotate_list):
+            if not self._g:
+                raise RuntimeError("Jeu non initialisé")
+            taille = len(x_list)
+            # ya une conversion de tab a faire
+            X = (c_float * taille)(*x_list)
+            Y = (c_float * taille)(*y_list)
+            W = (c_float * taille)(*w_list)
+            H = (c_float * taille)(*h_list)
+            S = (c_int * taille)(*sens_list)
+            I = (c_int * taille)(*id_list)
+            R = (c_int * taille)(*rotate_list)
+            jeu.modifier_images_batch(self._g, X, Y, W, H, S, I, R,taille)
+
+
     def modifier_texture(self, lien, id_num):
         jeu.modifier_texture_image(self._g, lien.encode("utf-8"), id_num)
+
+    def modifier_texture_image_batch(self, liens_list, id_list):
+        if not self._g:
+            raise RuntimeError("Jeu non initialisé")
+        taille = len(liens_list)
+        Liens = (c_char_p * taille)(*[
+            s.encode("utf-8") if isinstance(s, str) else s for s in liens_list
+        ])
+        Ids = (c_int * taille)(*id_list)
+        jeu.modifier_texture_image_batch(self._g, Liens, Ids, taille)
+
+
 
     # sons
     def jouer_son(self, lien, boucle=0, canal=-1):
@@ -428,8 +490,20 @@ class _PyCgame:
         if not self._g:
             return False
         return jeu.touche_mannette_juste_presse(self._g, key_name.encode("utf-8"))
+    
+    def renvoie_joysticks(self, dead_zone=0.1):
+        if not self._g:
+            raise RuntimeError("Jeu non initialisé")
+        entrees_ptr = self._g.contents.entrees
+        if not entrees_ptr:
+            return None
 
-    def init_controller(self, index=0):
+        ptr = jeu.renvoie_joysticks(entrees_ptr, dead_zone)
+        if not ptr:
+            return None
+        return [ptr[i] for i in range(6)]
+
+    def init_mannette(self, index=0):
         if not self._g:
             raise RuntimeError("Jeu non initialisé")
         jeu.init_controller(self._g, index)
@@ -438,6 +512,18 @@ class _PyCgame:
         if not self._g:
             return
         jeu.fermer_controller(self._g)
+
+    def fermer_joystick(self):
+        if not self._g:
+            return
+        jeu.fermer_joystick(self._g)
+
+    def random(self, min, max):
+        return jeu.random_jeu(min, max)
+    def colorier(self,r,g,b):
+        if not self._g:
+            return
+        return jeu.colorier(self._g,r,g,b)
     #update
     def set_update_callback(self, py_func):
         if not callable(py_func):

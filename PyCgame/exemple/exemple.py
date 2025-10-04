@@ -1,17 +1,18 @@
 
 from PyCgame import PyCgame
 import random
-
+import  colorsys
 # Flag pour afficher les fonctions mathématiques une seule fois
 math_demo_done = False
 init_mannette = False
+r,g,b,t= 0,0,0,0
 def update_jeu():
     """
     Cette fonction est appelée à chaque frame par le moteur.
     C'est ici quon gères les entrées clavier, les images,
     le son et les calculs.
     """
-    global math_demo_done,init_mannette
+    global math_demo_done,init_mannette,r,g,b,t
     if not(init_mannette):
         PyCgame.init_controller()
         init_mannette=True
@@ -19,7 +20,21 @@ def update_jeu():
     #print(f"[INFO] dt={PyCgame.dt}, time={PyCgame.time},decalage x,y:{PyCgame.decalage_x},{PyCgame.decalage_y} fps={PyCgame.fps}")
     #print(f"mouse : {PyCgame.mouse_x} {PyCgame.mouse_y} {PyCgame.mouse_presse} {PyCgame.mouse_juste_presse}")
     # 🎵 Contrôle du son
+    # 🌈 Arc-en-ciel RGB via HSV
+    t+=1
+    hue = (t * 0.005) % 1.0   # tourne lentement (0.2 = vitesse de rotation)
+    sat = 1.0
+    val = 1.0
+
+        # HSV -> RGB
+    r_f, g_f, b_f = colorsys.hsv_to_rgb(hue, sat, val)
+    r, g, b = int(r_f * 255), int(g_f * 255), int(b_f * 255)
+
+    PyCgame.colorier(r, g, b)
     if PyCgame.touche_mannette_juste_presse("X"):
+        print(f"{PyCgame.random(0,1000)}")
+        for i in PyCgame.renvoie_joysticks():
+            print(f"info : {i}")
         PyCgame.pause_son("./assets/test.wav")
     if PyCgame.touche_mannette_juste_presse("Y"):
         PyCgame.reprendre_son("./assets/test.wav")
@@ -40,8 +55,15 @@ def update_jeu():
             100, 100,
             id_num=30
         )
+        PyCgame.ajouter_image(
+            "./assets/test.png",
+            random.randint(0, 50),
+            random.randint(0, 50),
+            100, 100,
+            id_num=20
+        )
     if PyCgame.touche_presser("gauche"):  # Supprimer l’image avec id=30
-        PyCgame.supprimer_image(30)
+        PyCgame.supprimer_images_par_id_batch([30,20,10])
     if PyCgame.touche_presser("I"):  # Modifier l’image (déplacer/redimensionner)
         PyCgame.modifier_image(0, 0, 120, 120, id_num=30)
 
@@ -50,20 +72,20 @@ def update_jeu():
         PyCgame.redimensionner_fenetre()
     if PyCgame.touche_presser("F4"):  # Quitter le jeu proprement
         PyCgame.stopper_jeu()
-
-    # 🔤 Affichage de texte avec police custom
     if PyCgame.touche_presser("F5"):
         PyCgame.ajouter_mot(
             "./assets/police",
             "Hello PyCgame ! 123 ;:[]$",
-            x=0,
-            y=164,
-            coeff=2,
+            x=10,
+            y=90,
+            coeff=1,
             ecart=2,
-            id_num=1,
+            id_num=10,
             sens=0,
             rotation=0
         )
+
+    # 🔤 Affichage de texte avec police custom
 
     # 📝 Écriture dans le log
     if PyCgame.touche_presser("F6"):
@@ -113,7 +135,7 @@ PyCgame.init(
     chemin_image="./assets",
     chemin_son="./assets",
     dessiner=True,
-    bande_noir=True,
+    bande_noir=False,
     r=50, g=3, b=70,
-    update_func=update_jeu,nom_fenetre="coucou PyCgame"
+    update_func=update_jeu,nom_fenetre="coucou PyCgame",debug=True
 )
