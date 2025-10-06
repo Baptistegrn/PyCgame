@@ -477,7 +477,7 @@ class _PyCgame:
             raise RuntimeError("Jeu non initialisé")
         jeu.init_controller(self._g, index)
 
-    def fermer_controller(self):
+    def fermer_mannette(self):
         if not self._g:
             return
         jeu.fermer_controller(self._g)
