@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: PyCgame
-Version: 1.6.4
+Version: 1.7.0
 Summary: Moteur Python pour jeux 2D avec gestion des images, sons et entrées
 Author: Baptiste GUERIN
 Author-email: baptiste.guerin34@gmail.com
@@ -30,8 +30,6 @@ Dynamic: summary
 
 👉 Compatible avec **Windows** et **Linux**.
 
-
-
 ---
 
 <img src="https://raw.githubusercontent.com/Baptistegrn/PyCgame/refs/heads/main/demo.gif" width="500">
@@ -50,25 +48,26 @@ Import obligatoire dans votre projet :
 from PyCgame import PyCgame
 ```
 
-⚠️ Attention : l’import exact `from PyCgame import PyCgame` doit être utilisé.
+⚠️ Attention : l'import exact `from PyCgame import PyCgame` doit être utilisé.
 
+---
 
-## 🚀 Initialisation d’un jeu
+## 🚀 Initialisation d'un jeu
 
 ```python
 PyCgame.init(
     largeur=160,           # largeur virtuelle
     hauteur=90,            # hauteur virtuelle
-    fps=60,                # nombre d’images par seconde
-    coeff=3,               # facteur de mise à l’échelle
+    fps=60,                # nombre d'images par seconde
+    coeff=3,               # facteur de mise à l'échelle
     chemin_image="./assets", # dossier images
     chemin_son="./assets",   # dossier sons
     dessiner=True,         # dessiner le fond ?
     bande_noir=True,       # bandes noires si ratio différent ?
     r=0, g=0, b=0,         # couleur de fond
-    update_func=Update,    # fonction d’update
-    nom_fenetre="MonJeu"  # nom de la fenêtre
-    debug=False          #on ecrit les logs dans erreurs.log ?
+    update_func=Update,    # fonction d'update
+    nom_fenetre="MonJeu",  # nom de la fenêtre
+    debug=False            # on écrit les logs dans erreurs.log ?
 )
 
 PyCgame.stopper_jeu()
@@ -205,7 +204,6 @@ if axes:
     print("Triggers     :", lt, rt)
 
 PyCgame.fermer_controller()
-
 ```
 
 ### Boutons supportés
@@ -250,42 +248,88 @@ PyCgame.fermer_controller()
 `PyCgame.renvoie_joysticks(dead_zone=0.1)`  
 Retourne un tableau de 6 valeurs flottantes entre -1 et 1 :
 
-1.axe horizontal du stick gauche  
-2.axe vertical du stick gauche  
-3.axe horizontal du stick droit  
-4.axe vertical du stick droit  
-5.gâchette gauche (trigger L2 / LT)  
-6.gâchette droite (trigger R2 / RT)  
+1. axe horizontal du stick gauche  
+2. axe vertical du stick gauche  
+3. axe horizontal du stick droit  
+4. axe vertical du stick droit  
+5. gâchette gauche (trigger L2 / LT)  
+6. gâchette droite (trigger R2 / RT)  
 
-⚠️ Dead zone : ignore les petites variations au repos (par défaut 0.1)  
+⚠️ Dead zone : ignore les petites variations au repos (par défaut 0.1)
+
 ---
 
 ## 🖼️ Images et texte
-ajouter_image supprimer et modifier sont dans un tableau par ordre dajout donc si on veut mettre une image au premier plan on doit supprimer toute celle davant et les rajouter apres ( cout casiment nul ) 
+
+Le système de rendu utilise **l'ordre de dessin** : les éléments sont affichés dans l'ordre où ils sont ajoutés. Pour placer une image au premier plan, il faut retirer les éléments qui la précèdent puis les rajouter après (coût négligeable).
+
 ```python
-PyCgame.ajouter_image("./assets/perso.png", 10, 20, 32, 32, id_num=2)
-PyCgame.ajouter_mot("./assets/police", "Hello", 50, 50, 1, 1, id_num=1)
-PyCgame.supprimer_image(1)
-PyCgame.modifier_image(20, 30, 32, 32, id_num=1)
-PyCgame.modifier_texture("./assets/nouvelle_image.png", id_num=2)
-PyCgame.ecrire_console("Hello World !")
+# Dessiner une image
+PyCgame.dessiner_image("./assets/perso.png", x=10, y=20, w=32, h=32, sens=0, rotation=0)
+
+# Dessiner plusieurs images en batch (plus performant)
+PyCgame.dessiner_image_batch(
+    ids=["./assets/tile.png", "./assets/tile.png", "./assets/enemy.png"],
+    xs=[0, 32, 64],
+    ys=[0, 0, 16],
+    ws=[32, 32, 48],
+    hs=[32, 32, 48],
+    sens=[0, 0, 1],      # optionnel (par défaut : 0)
+    rotations=[0, 0, 90] # optionnel (par défaut : 0)
+)
+
+# Dessiner du texte
+PyCgame.dessiner_mot(
+    lien="./assets/police",  # chemin vers la police de caractères
+    mot="Hello World",
+    x=50, y=50,
+    coeff=1,    # facteur de taille
+    ecart=1,    # espacement entre les caractères
+    sens=0,     # orientation (0=normal, 1=miroir horizontal)
+    rotation=0  # rotation en degrés
+)
+
+# Écrire dans la console de debug
+PyCgame.ecrire_console("Message de debug")
 ```
+
+### Paramètres de dessin
+
+* **lien/ids** : chemin vers l'image ou la police de caractères
+* **x, y** : position en pixels (coordonnées virtuelles)
+* **w, h** : largeur et hauteur en pixels
+* **sens** : orientation (0 = normal, 1 = miroir horizontal)
+* **rotation** : rotation en degrés (0-360)
+* **coeff** : facteur d'échelle pour le texte
+* **ecart** : espacement entre les caractères du texte
 
 ---
 
 ## 🔊 Sons
 
 ```python
+# Jouer un son
 PyCgame.jouer_son("./assets/son.wav", boucle=1, canal=3)
+
+# Arrêter un son spécifique
 PyCgame.arreter_son("./assets/son.wav")
+
+# Arrêter un canal
 PyCgame.arreter_canal(3)
 
-# Pause/Reprendre
+# Pause/Reprendre par canal
 PyCgame.pause_canal(3)
-PyCgame.pause_son("./assets/son.wav")
 PyCgame.reprendre_canal(3)
+
+# Pause/Reprendre par son
+PyCgame.pause_son("./assets/son.wav")
 PyCgame.reprendre_son("./assets/son.wav")
 ```
+
+### Paramètres audio
+
+* **boucle** : nombre de répétitions (-1 = infini, 0 = une fois, 1+ = répétitions)
+* **canal** : canal audio à utiliser (-1 = automatique, 0-31 = canal spécifique)
 
 ---
 
@@ -312,18 +356,18 @@ PyCgame.redimensionner_fenetre()
 
 ---
 
-
-## 🎨​ Colorier fond
+## 🎨 Colorier fond
 
 ```python
-PyCgame.colorier(r,g,b)
+PyCgame.colorier(r, g, b)
 ```
 
 ---
-## 🎲​ fonction random
+
+## 🎲 Fonction random
 
 ```python
-PyCgame.random(min,max)
+PyCgame.random(min, max)
 ```
 
 ---
@@ -334,6 +378,9 @@ PyCgame.random(min,max)
 from PyCgame import PyCgame
 
 def update():
+    # Dessiner une image chaque frame
+    PyCgame.dessiner_image("./assets/player.png", 10, 10, 32, 32)
+    
     if PyCgame.touche_presser("Espace"):
         print("Espace pressée !")
 
@@ -345,13 +392,14 @@ PyCgame.init(largeur=160, hauteur=90, fps=60, update_func=update)
 ## ✅ Notes importantes
 
 * Les chemins des fichiers sont relatifs au projet.
-* Les `id_num` doivent être **uniques** pour chaque image/texte sauf si on veut les modifier (position identique pour toute les images avec le meme id modifie, bientot prise en charge dun decalage possible) / supprimer ensemble (possible).
+* Les images sont dessinées **dans l'ordre d'ajout** - l'ordre définit la profondeur de rendu.
 * `update_func` doit être une **fonction callable**.
-* Pour les manettes : toujours appeler `PyCgame.init_controller()` après `PyCgame.init()` et fermer avec `PyCgame.fermer_controller()` avant de quitter.
+* Utilisez `dessiner_image_batch()` pour optimiser le rendu de multiples images similaires.
+* Pour les manettes : toujours appeler `PyCgame.init_mannette()` après `PyCgame.init()` et fermer avec `PyCgame.fermer_controller()` avant de quitter.
 
 ---
 
 ## 📬 Support
 
-Pour signaler un bug ou proposer une amélioration :
+Pour signaler un bug ou proposer une amélioration :  
 📧 **[Baptiste.guerin34@gmail.com](mailto:Baptiste.guerin34@gmail.com)**

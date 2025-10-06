@@ -106,25 +106,12 @@ jeu.liberer_jeu.argtypes = [POINTER(Gestionnaire)]
 jeu.liberer_jeu.restype = None
 
 # Images
-jeu.ajouter_image_au_tableau.argtypes = [POINTER(Gestionnaire), c_char_p,c_float, c_float, c_float, c_float,c_int, c_int, c_int]
-jeu.ajouter_image_au_tableau.restype = c_int
+jeu.ajouter_image_au_tableau.argtypes = [POINTER(Gestionnaire), c_char_p,c_float, c_float, c_float, c_float, c_int, c_int]
+jeu.ajouter_image_au_tableau.restype = None
 
-jeu.supprimer_images_par_id.argtypes = [POINTER(Gestionnaire), c_int]
-jeu.supprimer_images_par_id.restype = None
-jeu.supprimer_images_par_id_batch.argtypes = [POINTER(Gestionnaire),POINTER(c_int), c_int]
-jeu.supprimer_images_par_id_batch.restype = None
-
-
-jeu.modifier_images.argtypes = [POINTER(Gestionnaire),c_float, c_float, c_float, c_float,c_int, c_int, c_int]
-jeu.modifier_images.restype = None
-jeu.modifier_images_batch.argtypes = [POINTER(Gestionnaire),POINTER(c_float),  POINTER(c_float),  POINTER(c_float),POINTER(c_float),POINTER(c_int),POINTER(c_int),POINTER(c_int),c_int]
-jeu.modifier_images_batch.restype = None
-
-
-jeu.modifier_texture_image.argtypes = [POINTER(Gestionnaire), c_char_p, c_int]
-jeu.modifier_texture_image.restype = None
-jeu.modifier_texture_image_batch.argtypes = [POINTER(Gestionnaire),POINTER(c_char_p), POINTER(c_int),c_int]
-jeu.modifier_texture_image_batch.restype = None
+#batch
+jeu.ajouter_image_au_tableau_batch.argtypes = [POINTER(Gestionnaire),POINTER(c_char_p),POINTER(c_float),POINTER(c_float),POINTER(c_float),POINTER(c_float),POINTER(c_int),POINTER(c_int),c_int]
+jeu.ajouter_image_au_tableau_batch.restype = None
 # Sons
 jeu.jouer_son.argtypes = [POINTER(Gestionnaire), c_char_p, c_int, c_int]
 jeu.jouer_son.restype = None
@@ -238,7 +225,7 @@ jeu.ecrire_dans_console.restype = None
 
 
 jeu.ajouter_mot_dans_tableau.argtypes = [
-    POINTER(Gestionnaire),  c_int, c_char_p, c_char_p, c_float,c_float, c_float,c_int,  c_float,c_int                   
+    POINTER(Gestionnaire), c_char_p, c_char_p, c_float,c_float, c_float,c_int,  c_float,c_int                   
 ]
 jeu.ajouter_mot_dans_tableau.restype = None
 
@@ -361,13 +348,40 @@ class _PyCgame:
         return jeu.touche_enfoncee(self._g, key_name.encode("utf-8"))
 
     # iamges
-    def ajouter_image(self, lien, x, y, w, h, id_num,sens=0, rotation=0):
+    def dessiner_image(self, lien, x, y, w, h,sens=0, rotation=0):
         return jeu.ajouter_image_au_tableau(self._g, lien.encode("utf-8"),
-                                            x, y, w, h, sens, id_num, rotation)
-    def ajouter_mot(self, lien, mot, x, y, coeff, ecart, id_num, sens=0, rotation=0):
+                                            x, y, w, h, sens, rotation)
+    def dessiner_image_batch(self, ids, xs, ys, ws, hs, sens=None, rotations=None):
+        taille = len(ids)
+        if sens is None:
+            sens = [0] * taille
+        if rotations is None:
+            rotations = [0] * taille
+
+        # Convertir les listes Python en tableaux C
+        ids_c = (c_char_p * taille)(*(s.encode("utf-8") for s in ids))
+        xs_c = (c_float * taille)(*xs)
+        ys_c = (c_float * taille)(*ys)
+        ws_c = (c_float * taille)(*ws)
+        hs_c = (c_float * taille)(*hs)
+        sens_c = (c_int * taille)(*sens)
+        rotations_c = (c_int * taille)(*rotations)
+
+        # Appel direct de la fonction C
+        jeu.ajouter_image_au_tableau_batch(
+            self._g,
+            ids_c,
+            xs_c,
+            ys_c,
+            ws_c,
+            hs_c,
+            sens_c,
+            rotations_c,
+            c_int(taille)
+        )
+    def dessiner_mot(self, lien, mot, x, y, coeff, ecart,sens=0, rotation=0):
         return jeu.ajouter_mot_dans_tableau(
             self._g,
-            id_num,
             lien.encode("utf-8"),
             mot.encode("utf-8"),
             x, y, coeff,
@@ -378,51 +392,6 @@ class _PyCgame:
 
     def ecrire_console(self,mot):
         return jeu.ecrire_dans_console(mot.encode("utf-8"))
-    def supprimer_image(self, id_num):
-        jeu.supprimer_images_par_id(self._g, id_num)
-
-    def supprimer_images_par_id_batch(self, id_supprimer_list):
-        if not self._g:
-            raise RuntimeError("Jeu non initialisé")
-        # conversion
-        taille = len(id_supprimer_list)
-        Ids = (c_int * taille)(*id_supprimer_list)
-        jeu.supprimer_images_par_id_batch(self._g, Ids,taille)
-
-
-    def modifier_image(self, x, y, w, h, id_num,sens=0, rotation=0):
-        jeu.modifier_images(self._g, x, y, w, h, sens, id_num, rotation)
-
-    def modifier_images_batch(self, x_list, y_list, w_list, h_list, sens_list, id_list, rotate_list):
-            if not self._g:
-                raise RuntimeError("Jeu non initialisé")
-            taille = len(x_list)
-            # ya une conversion de tab a faire
-            X = (c_float * taille)(*x_list)
-            Y = (c_float * taille)(*y_list)
-            W = (c_float * taille)(*w_list)
-            H = (c_float * taille)(*h_list)
-            S = (c_int * taille)(*sens_list)
-            I = (c_int * taille)(*id_list)
-            R = (c_int * taille)(*rotate_list)
-            jeu.modifier_images_batch(self._g, X, Y, W, H, S, I, R,taille)
-
-
-    def modifier_texture(self, lien, id_num):
-        jeu.modifier_texture_image(self._g, lien.encode("utf-8"), id_num)
-
-    def modifier_texture_image_batch(self, liens_list, id_list):
-        if not self._g:
-            raise RuntimeError("Jeu non initialisé")
-        taille = len(liens_list)
-        Liens = (c_char_p * taille)(*[
-            s.encode("utf-8") if isinstance(s, str) else s for s in liens_list
-        ])
-        Ids = (c_int * taille)(*id_list)
-        jeu.modifier_texture_image_batch(self._g, Liens, Ids, taille)
-
-
-
     # sons
     def jouer_son(self, lien, boucle=0, canal=-1):
         jeu.jouer_son(self._g, lien.encode("utf-8"), boucle, canal)

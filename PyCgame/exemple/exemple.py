@@ -1,97 +1,93 @@
-
 from PyCgame import PyCgame
 import random
-import  colorsys
-# Flag pour afficher les fonctions mathématiques une seule fois
+import colorsys
+
+# Flags et variables globales
 math_demo_done = False
 init_mannette = False
-r,g,b,t= 0,0,0,0
+t = 0
+images_a_afficher = []  # Liste pour gérer les images (tu peux stocker tuples x,y,w,h,lien)
+
 def update_jeu():
     """
-    Cette fonction est appelée à chaque frame par le moteur.
-    C'est ici quon gères les entrées clavier, les images,
-    le son et les calculs.
+    Fonction appelée à chaque frame par le moteur.
+    Gère entrées clavier, images, sons et calculs.
     """
-    global math_demo_done,init_mannette,r,g,b,t
-    if not(init_mannette):
-        PyCgame.init_controller()
-        init_mannette=True
-    # Affichage d'infos de debug sur le jeu en cours
-    #print(f"[INFO] dt={PyCgame.dt}, time={PyCgame.time},decalage x,y:{PyCgame.decalage_x},{PyCgame.decalage_y} fps={PyCgame.fps}")
-    #print(f"mouse : {PyCgame.mouse_x} {PyCgame.mouse_y} {PyCgame.mouse_presse} {PyCgame.mouse_juste_presse}")
-    # 🎵 Contrôle du son
-    # 🌈 Arc-en-ciel RGB via HSV
-    t+=1
-    hue = (t * 0.005) % 1.0   # tourne lentement (0.2 = vitesse de rotation)
-    sat = 1.0
-    val = 1.0
+    global math_demo_done, init_mannette, t, images_a_afficher
 
-        # HSV -> RGB
-    r_f, g_f, b_f = colorsys.hsv_to_rgb(hue, sat, val)
-    r, g, b = int(r_f * 255), int(g_f * 255), int(b_f * 255)
+    # Initialisation de la manette
+    if not init_mannette:
+        PyCgame.init_mannette()
+        init_mannette = True
 
-    PyCgame.colorier(r, g, b)
+    # Arc-en-ciel RGB
+    t += 1
+    hue = (t * 0.005) % 1.0
+    r_f, g_f, b_f = colorsys.hsv_to_rgb(hue, 1.0, 1.0)
+    PyCgame.colorier(int(r_f * 255), int(g_f * 255), int(b_f * 255))
+
+    # Gestion des sons
     if PyCgame.touche_mannette_juste_presse("X"):
         print(f"{PyCgame.random(0,1000)}")
-        for i in PyCgame.renvoie_joysticks():
-            print(f"info : {i}")
+        print("Infos joysticks :", PyCgame.renvoie_joysticks())
         PyCgame.pause_son("./assets/test.wav")
+
     if PyCgame.touche_mannette_juste_presse("Y"):
         PyCgame.reprendre_son("./assets/test.wav")
+
     if PyCgame.touche_mannette_enfoncee("A"):
-        print("touche mannette enfoncee")
-        
-    if PyCgame.touche_presser("X"):  # Jouer un son
+        print("Touche mannette A enfoncée")
+
+    if PyCgame.touche_presser("X"):
         PyCgame.jouer_son("./assets/test.wav", boucle=2, canal=3)
-    if PyCgame.touche_presser("Z"):  # Stopper un canal
+    if PyCgame.touche_presser("Z"):
         PyCgame.arreter_canal(3)
 
-    # 🎨 Gestion des images
-    if PyCgame.touche_presser("S"):  # Ajouter une image aléatoire
-        PyCgame.ajouter_image(
-            "./assets/test.png",
-            random.randint(0, 50),
-            random.randint(0, 50),
-            100, 100,
-            id_num=30
-        )
-        PyCgame.ajouter_image(
-            "./assets/test.png",
-            random.randint(0, 50),
-            random.randint(0, 50),
-            100, 100,
-            id_num=20
-        )
-    if PyCgame.touche_presser("gauche"):  # Supprimer l’image avec id=30
-        PyCgame.supprimer_images_par_id_batch([30,20,10])
-    if PyCgame.touche_presser("I"):  # Modifier l’image (déplacer/redimensionner)
-        PyCgame.modifier_image(0, 0, 120, 120, id_num=30)
+    # Gestion des images
+    if PyCgame.touche_presser("S"):
+        # Ajouter une image aléatoire dans la liste
+        for _ in range(2):
+            x, y = PyCgame.random(0, 200), PyCgame.random(0, 100)
 
-    # ⚙️ Fonctions système
-    if PyCgame.touche_presser("F3"):  # Redimensionner la fenêtre
+            w, h = PyCgame.random(50, 120), PyCgame.random(50, 120)
+            lien = "./assets/test.png"
+            images_a_afficher.append((lien, x, y, w, h))
+
+    if PyCgame.touche_presser("gauche"):
+        # Vider la liste pour "supprimer" les images
+        images_a_afficher = []
+
+    if PyCgame.touche_presser("I"):
+        # Déplacer/redimensionner la première image si elle existe
+        if images_a_afficher:
+            lien, _, _, _, _ = images_a_afficher[0]
+            images_a_afficher[0] = (lien, 100, 100, 120, 120)
+
+    # Dessiner toutes les images stockées
+    for lien, x, y, w, h in images_a_afficher:
+        PyCgame.dessiner_image(lien, x, y, w, h)
+
+
+    PyCgame.dessiner_image_batch(['./assets/test.png','./assets/test.png'],[30,40],[30,40],[100,100],[100,100])
+
+    # Fonctions système
+    if PyCgame.touche_presser("F3"):
         PyCgame.redimensionner_fenetre()
-    if PyCgame.touche_presser("F4"):  # Quitter le jeu proprement
+    if PyCgame.touche_presser("F4"):
         PyCgame.stopper_jeu()
-    if PyCgame.touche_presser("F5"):
-        PyCgame.ajouter_mot(
+    if PyCgame.touche_enfoncee("F5"):
+        PyCgame.dessiner_mot(
             "./assets/police",
             "Hello PyCgame ! 123 ;:[]$",
             x=10,
             y=90,
             coeff=1,
-            ecart=2,
-            id_num=10,
-            sens=0,
-            rotation=0
+            ecart=2
         )
-
-    # 🔤 Affichage de texte avec police custom
-
-    # 📝 Écriture dans le log
     if PyCgame.touche_presser("F6"):
         PyCgame.ecrire_console("[LOG] Hello depuis Python !\n")
 
-    # ➗ Démo math (affichée une seule fois)
+    # Démo math (une seule fois)
     if not math_demo_done:
         print("\n=== Démonstration des fonctions math ===")
         print("abs(-5)       =", PyCgame.abs_val(-5))
@@ -125,7 +121,6 @@ def update_jeu():
         print("=== Fin démo math ===\n")
         math_demo_done = True
 
-
 # 🚀 Initialisation du moteur
 PyCgame.init(
     largeur=320,
@@ -137,5 +132,7 @@ PyCgame.init(
     dessiner=True,
     bande_noir=False,
     r=50, g=3, b=70,
-    update_func=update_jeu,nom_fenetre="coucou PyCgame",debug=True
+    update_func=update_jeu,
+    nom_fenetre="coucou PyCgame",
+    debug=True
 )

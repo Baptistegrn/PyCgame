@@ -73,8 +73,8 @@ JEU_API void boucle_principale(Gestionnaire *jeu) {
 }
 
 
-
 JEU_API void update(Gestionnaire *jeu) {
+
 
 
     if (g_update_callback) {

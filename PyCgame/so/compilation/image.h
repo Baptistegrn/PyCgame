@@ -93,7 +93,6 @@ typedef struct GestionnaireEntrees {
 } GestionnaireEntrees;
 
 typedef struct {
-    int id;
     float posx, posy;
     float taillex, tailley;
     int   sens;int rotation;
@@ -147,17 +146,22 @@ JEU_API void mettre_debug(bool d);
 JEU_API void colorier(Gestionnaire *gestionnaire ,int r, int g,int b);
 
 
-JEU_API int ajouter_image_au_tableau(Gestionnaire *gestionnaire, const char *id,
-                                     float x, float y, float w, float h, int sens, int id_num,int rotation);
+JEU_API void ajouter_image_au_tableau(Gestionnaire *gestionnaire, const char *id,
+                                     float x, float y, float w, float h, int sens,int rotation);
 
-JEU_API void supprimer_images_par_id(Gestionnaire *gestionnaire, int id_supprimer);
-JEU_API void modifier_images(Gestionnaire *jeu, float x, float y, float w, float h, int sens, int id_num,int rotation);
+JEU_API void ajouter_image_au_tableau_batch(Gestionnaire *gestionnaire, 
+                                            const char **id,
+                                            float *x, float *y, float *w, float *h,
+                                            int *sens, int *rotation,
+                                            int taille);
+// JEU_API void supprimer_images_par_id(Gestionnaire *gestionnaire, int id_supprimer);
+// JEU_API void modifier_images(Gestionnaire *jeu, float x, float y, float w, float h, int sens, int id_num,int rotation);
 
-JEU_API void modifier_images_batch(Gestionnaire *jeu, float* x, float* y,
-                             float* w, float *h, int *sens, int *id_num,int *rotate,int taille);
-JEU_API void supprimer_images_par_id_batch(Gestionnaire *jeu, int *id_supprimer,int taille); 
-JEU_API void modifier_texture_image_batch(Gestionnaire *jeu, const char **lien, int *id,int taille);
-JEU_API void modifier_texture_image(Gestionnaire *jeu, const char *lien, int id);
+// JEU_API void modifier_images_batch(Gestionnaire *jeu, float* x, float* y,
+//                              float* w, float *h, int *sens, int *id_num,int *rotate,int taille);
+// JEU_API void supprimer_images_par_id_batch(Gestionnaire *jeu, int *id_supprimer,int taille); 
+// JEU_API void modifier_texture_image_batch(Gestionnaire *jeu, const char **lien, int *id,int taille);
+// JEU_API void modifier_texture_image(Gestionnaire *jeu, const char *lien, int id);
 
 JEU_API bool touche_juste_presse(Gestionnaire *jeu, const char *touche);
 JEU_API bool touche_enfoncee(Gestionnaire *jeu, const char *touche);
@@ -173,7 +177,7 @@ JEU_API void fermer_joystick(Gestionnaire *jeu);
 
 JEU_API void redimensionner_fenetre(Gestionnaire *gestionnaire);
 JEU_API void boucle_principale(Gestionnaire *jeu);
-JEU_API void ajouter_mot_dans_tableau(Gestionnaire *jeu, int id, const char *chemin, 
+JEU_API void ajouter_mot_dans_tableau(Gestionnaire *jeu, const char *chemin, 
                               const char *mot, float posx, float posy, float coeff, 
                               int sens, float ecart,int decalage);
 
@@ -266,11 +270,11 @@ int collect_pngs(const char *dir, char ***out_list, int *out_count) ;
 
 int collect_wavs(const char *dir, char ***out_list, int *out_count) ;
 int ends_with_wav(const char *name);
-
+ void free_gestionnaire(Gestionnaire *jeu);
 void free_tab_images(Gestionnaire *gestionnaire);
 void liberer_gestionnaire_son(GestionnaireSon *gs);
 void liberer_gestionnaire_image(GestionnaireTextures *gs);
-void free_gestionnaire(Gestionnaire *jeu);
+
 #ifdef __cplusplus
 }
 #endif

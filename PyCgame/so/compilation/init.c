@@ -11,7 +11,7 @@
 #include <SDL_mixer.h>
 
 
-#include <time.h>
+#include "time.h"
 
 #include "image.h"
 
@@ -34,6 +34,7 @@ JEU_API Gestionnaire* initialisation(
 
 
 
+    //random seed :
     srand((unsigned int)time(NULL));
     if(debug)fprintf(stderr, "[DEBUG] Début initialisation\n");
 

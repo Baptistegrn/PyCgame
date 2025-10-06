@@ -6,7 +6,7 @@ long_description = (this_directory / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="PyCgame",
-    version="1.6.4",
+    version="1.7.0",
     author="Baptiste GUERIN",
     author_email="baptiste.guerin34@gmail.com",
     description="Moteur Python pour jeux 2D avec gestion des images, sons et entrées",

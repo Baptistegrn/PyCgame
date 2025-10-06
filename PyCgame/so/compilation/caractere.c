@@ -8,7 +8,7 @@
 #include <ctype.h>
 
 
-float ajouter_char_dans_tableau(Gestionnaire *jeu, int id, const char *lien_image, 
+float ajouter_char_dans_tableau(Gestionnaire *jeu, const char *lien_image, 
                                char lettre, float posx, float posy, float coeff, int sens,int rotation) {
 
     char lien_image_lettre[TAILLE_LIEN_GT];
@@ -29,20 +29,20 @@ float ajouter_char_dans_tableau(Gestionnaire *jeu, int id, const char *lien_imag
     float largeur_finale = (float)texW * coeff;
     float hauteur_finale = (float)texH * coeff;
 
-    ajouter_image_au_tableau(jeu, lien_image_lettre, posx, posy, largeur_finale, hauteur_finale, sens, id,rotation);
+    ajouter_image_au_tableau(jeu, lien_image_lettre, posx, posy, largeur_finale, hauteur_finale, sens,rotation);
 
     return largeur_finale; 
 }
 
 
-JEU_API void ajouter_mot_dans_tableau(Gestionnaire *jeu, int id, const char *chemin, 
+JEU_API void ajouter_mot_dans_tableau(Gestionnaire *jeu, const char *chemin, 
                               const char *mot, float posx, float posy, float coeff, 
                               int sens, float ecart, int rotation) {
     int taillechaine = (int)strlen(mot);
     float sum = 0.0f;
 
     for (int i = 0; i < taillechaine; i++) {
-        float largeur = ajouter_char_dans_tableau(jeu, id, chemin, mot[i], 
+        float largeur = ajouter_char_dans_tableau(jeu,  chemin, mot[i], 
                                                   posx + sum, posy, coeff, sens,rotation);
         sum += largeur + ecart; 
     }

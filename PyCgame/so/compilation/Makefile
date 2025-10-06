@@ -1,7 +1,7 @@
 cc = gcc -Wall
 
 # Fichiers source
-src = main.c boucle.c caractere.c chargement_image.c fenetre.c image.c init.c input.c maths.c chargement_son.c debug.c trouver_png.c trouver_wav.c liberer.c redimensionnement.c controller.c normaliser.c random.c son.c
+src = main.c boucle.c caractere.c chargement_image.c fenetre.c image.c init.c input.c maths.c chargement_son.c debug.c trouver_png.c trouver_wav.c liberer.c redimensionnement.c controller.c random.c
 
 # Fichiers objets et dépendances (dans src/)
 obj = $(src:.c=.o)
