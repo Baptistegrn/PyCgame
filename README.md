@@ -308,8 +308,8 @@ PyCgame.reprendre_son("./assets/son.wav")
 
 ### Paramètres audio
 
-* **boucle** : nombre de répétitions (-1 = infini, 0 = une fois, 1+ = répétitions)
-* **canal** : canal audio à utiliser (-1 = automatique, 0-31 = canal spécifique)
+* **boucle** : nombre de répétitions (0= infini, 1+ = répétitions)
+* **canal** : canal audio à utiliser (0-31 = canal spécifique)
 
 ---
 
