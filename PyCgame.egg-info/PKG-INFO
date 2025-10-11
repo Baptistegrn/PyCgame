@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: PyCgame
-Version: 1.7.0
+Version: 1.8.0
 Summary: Moteur Python pour jeux 2D avec gestion des images, sons et entrées
 Author: Baptiste GUERIN
 Author-email: baptiste.guerin34@gmail.com
@@ -36,21 +36,58 @@ Dynamic: summary
 
 ## ⚡ Installation
 
-Depuis PyPI :
+### 📦 Depuis PyPI
 
 ```bash
 pip install PyCgame
 ```
 
-Import obligatoire dans votre projet :
+---
+
+### 🐍 Importation dans votre projet
 
 ```python
 from PyCgame import PyCgame
 ```
 
-⚠️ Attention : l'import exact `from PyCgame import PyCgame` doit être utilisé.
+> ⚠️ **Important :**  
+> L’import **doit être exactement** :
+> ```python
+> from PyCgame import PyCgame
+> ```
+> Toute autre forme d’import peut empêcher la bibliothèque de localiser correctement ses dépendances internes.
 
 ---
+
+### ⚙️ Compilation automatique
+
+Si votre système d’exploitation **n’est pas directement compatible**,  
+la compilation de la bibliothèque native sera **automatiquement effectuée via [`xmake`](https://xmake.io)**.
+
+Assurez-vous que :
+- la librairie compilée se trouve bien dans **`dist/`** (ex : `PyCgame/dist/`),  
+- et que `xmake` est correctement installé et accessible dans votre terminal.
+
+---
+
+### 🧱 Génération d’un exécutable
+
+Pour compiler votre projet en exécutable autonome :
+
+```bash
+pycgame_app nom_du_fichier
+```
+
+**Détails :**
+- Le fichier `.exe` (ou équivalent selon l’OS) sera généré dans le dossier **`/dist`**.  
+- **[PyInstaller](https://pyinstaller.org/)** est requis pour cette étape.  
+- L’exécutable généré est **spécifique à l’OS** sur lequel la compilation a été faite.  
+
+> 💡 **Astuce :**  
+> Si vous avez recompilé la librairie via `xmake`, l’exécutable obtenu **ne sera pas forcément portable** entre distributions Linux différentes.  
+> Il est donc recommandé de compiler sur une **distribution largement utilisée** (ex. *Ubuntu*, *Debian*, *Fedora*).
+
+
 
 ## 🚀 Initialisation d'un jeu
 

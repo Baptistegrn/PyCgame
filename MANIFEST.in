@@ -1,4 +1,5 @@
 
-recursive-include PyCgame/dll *
-recursive-include PyCgame/so *
-recursive-include examples *
+recursive-include PyCgame/xmake *
+recursive-include PyCgame/creations *
+recursive-include PyCgame/exemple *
+recursive-include PyCgame/dist *

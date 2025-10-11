@@ -1,13 +1,16 @@
-import ctypes
-from ctypes import c_int, c_float, c_bool, c_void_p, POINTER, c_double, c_char_p # bibli entre python et c
 import os
 import platform
+import subprocess
+import ctypes
+from ctypes import (
+    c_int, c_float, c_bool, c_void_p, POINTER, c_double, c_char_p
+)
 TAILLE_LIEN_GT = 256 # taille des liens maximum des dossiers vers les images et son
 TAILLE_CANAL =32 # nb canaux de sons
 
 import subprocess
 
-
+import sys
 # structure c : il yen a bcp plus que utlise au cas ou il faudrait les utiliser plus tard 
 class Image(ctypes.Structure):
     _fields_ = [
@@ -63,27 +66,94 @@ class Gestionnaire(ctypes.Structure):
     ]
 
 
-_pkg_dir = os.path.dirname(__file__)
-is_64bits = platform.architecture()[0] == "64bit"
-subfolder = "x64" if is_64bits else "x32"
 
+_pkg_dir = os.path.dirname(__file__)
 system = platform.system().lower()
 
+# Détermination du nom de la librairie selon le système
 if system == "windows":
-    dll_path = os.path.join(_pkg_dir, "dll", subfolder, "libjeu.dll")
-    jeu = ctypes.CDLL(dll_path)
-
+    lib_name = "libjeu.dll"
 elif system == "linux":
-    so_path = os.path.join(_pkg_dir, "so", "libjeu.so")
-
-    if not os.path.exists(so_path):
-        compilation_path = os.path.join(_pkg_dir, "so", "compilation")
-        subprocess.run(["make"], cwd=compilation_path, check=True)
-
-    jeu = ctypes.CDLL(so_path)
-
+    lib_name = "libjeu.so"
+elif system == "darwin":
+    lib_name = "libjeu.dylib"
 else:
-    raise RuntimeError(f"Système non supporté : {system}")
+    raise OSError(f"Système non pris en charge : {system}")
+
+# Cas 1 : mode compilé (PyInstaller ou équivalent)
+if getattr(sys, "frozen", False):
+    base_path = os.path.dirname(sys.executable)
+    lib_path = os.path.join(base_path, lib_name)
+
+# Cas 2 : mode développement / package Python pur
+else:
+    lib_path = os.path.join(_pkg_dir, "dist", lib_name)
+
+# Tentative de chargement
+try:
+    jeu = ctypes.CDLL(lib_path)
+except OSError:
+    print(f"Impossible de charger {lib_name} depuis : {lib_path}")
+    print("Tentative de compilation avec xmake...")
+
+    # Tentative de compilation si la lib n'existe pas
+    xmake_dir = os.path.join(_pkg_dir, "xmake")
+    try:
+        subprocess.run(
+            ["xmake"],
+            cwd=xmake_dir,
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
+        # Rechargement après compilation
+        jeu = ctypes.CDLL(lib_path)
+        print("compilation termine et reussi")
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(
+            "Échec de la compilation. "
+            "Veuillez installer un compilateur compatible (GCC, Clang ou MSVC)."
+        ) from e
+
+def compilation():
+    global system, _pkg_dir
+
+    # Arguments passés après la commande
+    args = sys.argv[1:]
+    if not args:
+        print("format : pycgame_app fichier.py.")
+        return
+
+    script_to_compile = args[0]
+
+    # Déterminer le binaire ou la DLL selon le système
+    if system == "windows":
+        lib_file = os.path.join(_pkg_dir,"dist", "libjeu.dll")
+    elif system == "linux":
+        lib_file = os.path.join(_pkg_dir,"dist", "libjeu.so")
+    elif system == "darwin":
+        lib_file = os.path.join(_pkg_dir, "dist","libjeu.dylib")
+    else:
+        raise OSError(f"Système non pris en charge : {system}")
+
+    cmd = [
+        "pyinstaller",
+        "--onefile",
+        f"--add-binary={lib_file};.",
+        script_to_compile
+    ]
+
+    print(" ".join(cmd))
+
+    try:
+        subprocess.run(cmd, check=True)
+        print("✅ Compilation terminée avec succès.")
+    except subprocess.CalledProcessError as e:
+        print("❌ Échec de la compilation :", e)
+         
+    
+
 
 
 
@@ -510,3 +580,5 @@ class _PyCgame:
 
 
 PyCgame = _PyCgame()
+
+

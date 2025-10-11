@@ -1,0 +1,2 @@
+[console_scripts]
+pycgame_app = PyCgame:compilation
