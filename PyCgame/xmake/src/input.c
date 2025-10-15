@@ -7,7 +7,7 @@
 #include <SDL_image.h>
 #include <ctype.h>
 
-
+#include <maths.h>
 void input_update(Gestionnaire *jeu, GestionnaireEntrees *entrees) {
     if (!jeu || !entrees) return;
 
@@ -26,8 +26,8 @@ void input_update(Gestionnaire *jeu, GestionnaireEntrees *entrees) {
         float coeff_largeur = (jeu->largeur != 0) ? (float)jeu->largeur_actuel / jeu->largeur : 1.0f;
         float coeff_hauteur = (jeu->hauteur != 0) ? (float)jeu->hauteur_actuel / jeu->hauteur : 1.0f;
 
-        entrees->mouse_x = (int)((raw_x - jeu->decalage_x) / coeff_largeur);
-        entrees->mouse_y = (int)((raw_y - jeu->decalage_y) / coeff_hauteur);
+        entrees->mouse_x = (int)lroundf((raw_x - jeu->decalage_x) / coeff_largeur);
+        entrees->mouse_y = (int)lroundf((raw_y - jeu->decalage_y) / coeff_hauteur);
 
         switch (event.type) {
             case SDL_QUIT:
