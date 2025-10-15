@@ -129,7 +129,7 @@ def update_jeu():
         PyCgame.dessiner_mot("./assets/police", "APPUIE B RESTART", 140, 300, 1, 2)
         
         # Redémarrer le jeu avec le bouton B
-        if PyCgame.touche_mannette_juste_presse("B"):
+        if PyCgame.touche_mannette_juste_presse("B") or PyCgame.touche_presser("B"):
             # Réinitialiser toutes les variables
             vies = 3
             score = 0
@@ -157,7 +157,19 @@ def update_jeu():
     # Déplacement basé sur le joystick
     vaisseau_x += joy_x * VAISSEAU_VITESSE * dt
     vaisseau_y += joy_y * VAISSEAU_VITESSE * dt
-    
+
+
+    if PyCgame.touche_enfoncee("a"):
+        vaisseau_x -=  VAISSEAU_VITESSE * dt
+    if PyCgame.touche_enfoncee("d"):
+        vaisseau_x += VAISSEAU_VITESSE * dt 
+    if PyCgame.touche_enfoncee("w"):
+        vaisseau_y -= VAISSEAU_VITESSE * dt
+    if PyCgame.touche_enfoncee("s"):
+        vaisseau_y += VAISSEAU_VITESSE * dt 
+
+
+
     # Empêcher le vaisseau de sortir de l'écran
     vaisseau_x = max(0, min(vaisseau_x, 352))
     vaisseau_y = max(0, min(vaisseau_y, 352))
@@ -167,7 +179,7 @@ def update_jeu():
         tir_cooldown -= dt
     
     # Tirer avec le bouton A si le cooldown est terminé
-    if PyCgame.touche_mannette_enfoncee("A") and tir_cooldown <= 0:
+    if PyCgame.touche_mannette_enfoncee("A") or PyCgame.touche_presser("space") and tir_cooldown <= 0:
         tirer_projectile()
         tir_cooldown = FIRE_RATE
     
