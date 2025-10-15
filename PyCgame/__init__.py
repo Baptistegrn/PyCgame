@@ -130,19 +130,31 @@ def compilation():
     # Déterminer le binaire ou la DLL selon le système
     if system == "windows":
         lib_file = os.path.join(_pkg_dir,"dist", "libjeu.dll")
+        cmd = [
+            "pyinstaller",
+            "--onefile",
+            f"--add-binary={lib_file};.",
+            script_to_compile
+        ]
     elif system == "linux":
         lib_file = os.path.join(_pkg_dir,"dist", "libjeu.so")
+        cmd = [
+            "pyinstaller",
+            "--onefile",
+            f"--add-binary={lib_file}:.",
+            script_to_compile
+        ]
     elif system == "darwin":
         lib_file = os.path.join(_pkg_dir, "dist","libjeu.dylib")
+        cmd = [
+            "pyinstaller",
+            "--onefile",
+            f"--add-binary={lib_file}:.",
+            script_to_compile
+        ]
     else:
         raise OSError(f"Système non pris en charge : {system}")
 
-    cmd = [
-        "pyinstaller",
-        "--onefile",
-        f"--add-binary={lib_file};.",
-        script_to_compile
-    ]
 
     print(" ".join(cmd))
 
