@@ -16,10 +16,13 @@ target("libjeu")
         set_policy("build.optimization.lto", true)
     end
 
-    add_packages("libsdl2", "libsdl2_image", "libsdl2_mixer")
-
     if is_plat("macosx") then
-
         add_frameworks("Cocoa", "CoreVideo", "IOKit", "ForceFeedback", "Carbon", "CoreAudio", "AudioToolbox")
         add_defines("MACOS_PLATFORM")
     end
+
+    if is_plat("linux") then
+        set_prefixname("")
+    end
+
+    add_packages("libsdl2", "libsdl2_image", "libsdl2_mixer")
