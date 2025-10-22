@@ -178,6 +178,34 @@ SDL_Scancode scancode_depuis_nom(const char *nom_non_normalise) {
         return SDL_SCANCODE_UNKNOWN;
     }
 
+if (strcmp(nom, "backspace") == 0 || strcmp(nom, "retour") == 0 || strcmp(nom, "effacer") == 0) 
+    return SDL_SCANCODE_BACKSPACE;
+
+// Modificateurs droits
+if (strcmp(nom, "rshift") == 0 || strcmp(nom, "majdroit") == 0) return SDL_SCANCODE_RSHIFT;
+if (strcmp(nom, "rctrl") == 0 || strcmp(nom, "ctrldroit") == 0) return SDL_SCANCODE_RCTRL;
+
+// Touches Windows/Command
+if (strcmp(nom, "windows") == 0 || strcmp(nom, "win") == 0 || strcmp(nom, "cmd") == 0 || strcmp(nom, "command") == 0) 
+    return SDL_SCANCODE_LGUI;
+if (strcmp(nom, "rwindows") == 0 || strcmp(nom, "rwin") == 0 || strcmp(nom, "rcmd") == 0) 
+    return SDL_SCANCODE_RGUI;
+
+// Ponctuation et symboles
+if (strcmp(nom, "-") == 0 || strcmp(nom, "moins") == 0) return SDL_SCANCODE_MINUS;
+if (strcmp(nom, "=") == 0 || strcmp(nom, "egal") == 0) return SDL_SCANCODE_EQUALS;
+if (strcmp(nom, "[") == 0) return SDL_SCANCODE_LEFTBRACKET;
+if (strcmp(nom, "]") == 0) return SDL_SCANCODE_RIGHTBRACKET;
+if (strcmp(nom, "\\") == 0) return SDL_SCANCODE_BACKSLASH;
+if (strcmp(nom, ";") == 0 || strcmp(nom, "pointvirgule") == 0) return SDL_SCANCODE_SEMICOLON;
+if (strcmp(nom, "'") == 0 || strcmp(nom, "apostrophe") == 0) return SDL_SCANCODE_APOSTROPHE;
+if (strcmp(nom, "`") == 0) return SDL_SCANCODE_GRAVE;
+if (strcmp(nom, ",") == 0 || strcmp(nom, "virgule") == 0) return SDL_SCANCODE_COMMA;
+if (strcmp(nom, ".") == 0 || strcmp(nom, "point") == 0) return SDL_SCANCODE_PERIOD;
+if (strcmp(nom, "/") == 0 || strcmp(nom, "slash") == 0) return SDL_SCANCODE_SLASH;
+
+// Pavé numérique (complément)
+if (strcmp(nom, "kp=") == 0) return SDL_SCANCODE_KP_EQUALS;
         // Touches spéciales
     if (strcmp(nom, "espace") == 0 || strcmp(nom, "space") == 0) return SDL_SCANCODE_SPACE;
     if (strcmp(nom, "entrer") == 0 || strcmp(nom, "return") == 0) return SDL_SCANCODE_RETURN;
